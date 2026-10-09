@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GPSCamRoute.RecordingSummaryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:GPSCamRoute.Models"
+    Title="Recorrido guardado"
+    NavigationPage.HasNavigationBar="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="18,30,18,24" Spacing="16">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="RECORRIDO GUARDADO" FontSize="26" FontAttributes="Bold" />
+                <Label x:Name="SavedDateLabel" FontSize="13" TextColor="{StaticResource TextSecondary}" />
+                <Label x:Name="EngineLabel" FontSize="11" TextColor="{StaticResource TextSecondary}" />
+                <Label x:Name="LoopSummaryLabel" FontSize="11" TextColor="#F5C56B" IsVisible="False" />
+            </VerticalStackLayout>
+
+            <Border Padding="16" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Divider}" StrokeThickness="1">
+                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" RowSpacing="16" ColumnSpacing="14">
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
+                        <Label Text="DISTANCIA" FontSize="10" TextColor="{StaticResource TextSecondary}" />
+                        <Label x:Name="DistanceValue" FontSize="24" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="2">
+                        <Label Text="DURACIÓN" FontSize="10" TextColor="{StaticResource TextSecondary}" />
+                        <Label x:Name="DurationValue" FontSize="24" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="2">
+                        <Label Text="PROMEDIO" FontSize="10" TextColor="{StaticResource TextSecondary}" />
+                        <Label x:Name="AverageValue" FontSize="20" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="2">
+                        <Label Text="MÁXIMA" FontSize="10" TextColor="{StaticResource TextSecondary}" />
+                        <Label x:Name="MaxValue" FontSize="20" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <Border Padding="16" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Divider}" StrokeThickness="1">
+                <VerticalStackLayout Spacing="6">
+                    <Label x:Name="VideoStatusLabel" FontSize="17" FontAttributes="Bold" />
+                    <Label x:Name="VideoLocationLabel" FontSize="12" TextColor="{StaticResource TextSecondary}" LineBreakMode="WordWrap" />
+                    <Label x:Name="VideoSizeLabel" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                    <Label x:Name="VideoErrorLabel" FontSize="12" TextColor="{StaticResource Danger}" IsVisible="False" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border x:Name="SegmentsPanel" IsVisible="False" Padding="14" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Divider}" StrokeThickness="1">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="VIDEOS DEL RECORRIDO" FontSize="13" FontAttributes="Bold" />
+                    <CollectionView x:Name="SegmentsView" SelectionMode="None" HeightRequest="220">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:VideoSegment">
+                                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" Padding="0,5">
+                                    <Label Grid.Column="0" Text="{Binding IndexText}" FontSize="11" FontAttributes="Bold" VerticalOptions="Center" />
+                                    <VerticalStackLayout Grid.Column="1" Spacing="1">
+                                        <Label Text="{Binding TimeRangeText}" FontSize="11" />
+                                        <Label Text="{Binding SizeText}" FontSize="10" TextColor="{StaticResource TextSecondary}" />
+                                        <Label Text="{Binding ProtectedText}" FontSize="9" FontAttributes="Bold" TextColor="#F5C56B" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="2" Text="VER" Padding="10,4" FontSize="10" IsVisible="{Binding HasPublicVideo}" CommandParameter="{Binding .}" Clicked="OnViewSegmentClicked" />
+                                    <Button Grid.Column="3" Text="↗" Padding="10,4" FontSize="12" IsVisible="{Binding HasPublicVideo}" CommandParameter="{Binding .}" Clicked="OnShareSegmentClicked" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button x:Name="ViewVideoButton" Grid.Column="0" Text="VER VIDEO" Style="{StaticResource PrimaryButton}" Clicked="OnViewVideoClicked" />
+                <Button x:Name="ShareVideoButton" Grid.Column="1" Text="COMPARTIR" Style="{StaticResource SecondaryButton}" Clicked="OnShareVideoClicked" />
+            </Grid>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="EXPORTAR GPX" Style="{StaticResource SecondaryButton}" Clicked="OnGpxClicked" />
+                <Button Grid.Column="1" Text="EXPORTAR CSV" Style="{StaticResource SecondaryButton}" Clicked="OnCsvClicked" />
+            </Grid>
+
+            <Button Text="FINALIZAR" Style="{StaticResource SecondaryButton}" Clicked="OnDoneClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

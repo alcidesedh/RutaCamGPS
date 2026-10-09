@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Lógica pura (sin dependencias de Android/MAUI): licencias, GPS, políticas de grabación, exportación.
+	     La comparten la app, el generador de licencias y las pruebas unitarias. -->
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<RootNamespace>RutaCam.Core</RootNamespace>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>latest</LangVersion>
+		<IsTrimmable>true</IsTrimmable>
+	</PropertyGroup>
+
+</Project>

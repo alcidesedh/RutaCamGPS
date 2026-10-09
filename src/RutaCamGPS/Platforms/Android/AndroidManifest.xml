@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+	<application
+		android:allowBackup="false"
+		android:icon="@mipmap/rutacam_icon"
+		android:roundIcon="@mipmap/rutacam_icon_round"
+		android:label="RutaCam GPS"
+		android:supportsRtl="true" />
+
+	<uses-feature android:name="android.hardware.camera" android:required="true" />
+	<uses-feature android:name="android.hardware.location.gps" android:required="false" />
+
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<!-- Bluetooth: permiso legado solo hasta Android 11; desde Android 12 basta BLUETOOTH_CONNECT -->
+	<uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+	<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+	<!-- Eliminado: android.permission.DUMP (permiso de sistema, nunca se concede a apps de usuario) -->
+
+	<queries>
+		<package android:name="com.whatsapp" />
+		<package android:name="com.whatsapp.w4b" />
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="whatsapp" />
+		</intent>
+	</queries>
+</manifest>

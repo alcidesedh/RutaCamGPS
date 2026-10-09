@@ -1,0 +1,452 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GPSCamRoute.OverlaySettingsPage"
+             Title="Configuración"
+             BackgroundColor="#08111F">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Cabecera fija: siempre visible, incluso al cambiar de sección. -->
+        <Border Grid.Row="0" BackgroundColor="#0B1628" Stroke="#23334A" StrokeThickness="1" Padding="14,10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                    <Label Text="AJUSTES DE RUTACAM" FontSize="20" FontAttributes="Bold" TextColor="White" />
+                    <Label x:Name="CurrentSettingsSectionLabel" Text="VIDEO Y GRABACIÓN" FontSize="11" TextColor="#9FB0C7" />
+                </VerticalStackLayout>
+                <Button Grid.Column="1"
+                        Text="GUARDAR"
+                        Clicked="OnSaveClicked"
+                        BackgroundColor="#14B8A6"
+                        TextColor="#04131B"
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        HeightRequest="44"
+                        MinimumWidthRequest="104"
+                        VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="104,*" ColumnSpacing="0">
+            <!-- Navegación vertical. -->
+            <ScrollView Grid.Column="0" BackgroundColor="#0A1423">
+                <VerticalStackLayout Padding="8,12" Spacing="7">
+                    <Button x:Name="VideoTabButton" Text="VIDEO" CommandParameter="Video" Clicked="OnSettingsTabClicked" BackgroundColor="#14B8A6" TextColor="#04131B" FontAttributes="Bold" FontSize="10" HeightRequest="44" />
+                    <Button x:Name="StabilizerTabButton" Text="ESTABIL." CommandParameter="Stabilizer" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="9" HeightRequest="44" />
+                    <Button x:Name="AudioTabButton" Text="AUDIO" CommandParameter="Audio" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="10" HeightRequest="44" />
+                    <Button x:Name="CameraTabButton" Text="CÁMARA" CommandParameter="Camera" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="10" HeightRequest="44" />
+                    <Button x:Name="GpsTabButton" Text="GPS" CommandParameter="Gps" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="10" HeightRequest="44" />
+                    <Button x:Name="SafetyTabButton" Text="SEGUR." CommandParameter="Safety" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="9" HeightRequest="44" />
+                    <Button x:Name="HudTabButton" Text="HUD" CommandParameter="Hud" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="10" HeightRequest="44" />
+                    <Button x:Name="MapTabButton" Text="MAPA" CommandParameter="Map" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="10" HeightRequest="44" />
+                    <Button x:Name="LogoTabButton" Text="LOGO" CommandParameter="Logo" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="10" HeightRequest="44" />
+                    <Button x:Name="ActivationTabButton" Text="ACTIVAR" CommandParameter="Activation" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="9" HeightRequest="44" />
+                    <Button x:Name="PrivacyTabButton" Text="PRIVAC." CommandParameter="Privacy" Clicked="OnSettingsTabClicked" BackgroundColor="#132238" TextColor="White" FontSize="9" HeightRequest="44" />
+
+                    <!-- Créditos/version: ubicación fija dentro de la columna lateral, debajo de PRIVACIDAD. -->
+                    <Label x:Name="CreditsLabel"
+                           Text="Creado por&#10;ElvisMao 2026"
+                           FontSize="9"
+                           TextColor="#64748B"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Fill"
+                           LineBreakMode="WordWrap"
+                           Margin="2,10,2,8" />
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Solo la sección activa se muestra en el panel derecho. -->
+            <ScrollView Grid.Column="1">
+                <VerticalStackLayout Padding="14,14,14,30" Spacing="14">
+
+                    <!-- VIDEO Y GRABACIÓN -->
+                    <VerticalStackLayout x:Name="VideoSettingsSection" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="PERFILES RÁPIDOS" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Aplica una base y luego ajusta cualquier opción manualmente." FontSize="12" TextColor="#9FB0C7" />
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="7">
+                                    <Button x:Name="CleanProfileButton" Grid.Column="0" Text="LIMPIO" Clicked="OnCleanProfileClicked" BackgroundColor="#17263A" TextColor="White" FontSize="10" />
+                                    <Button x:Name="BasicProfileButton" Grid.Column="1" Text="BÁSICO" Clicked="OnBasicProfileClicked" BackgroundColor="#17263A" TextColor="White" FontSize="10" />
+                                    <Button x:Name="FullProfileButton" Grid.Column="2" Text="COMPLETO" Clicked="OnFullProfileClicked" BackgroundColor="#17263A" TextColor="White" FontSize="9" />
+                                </Grid>
+                                <Label x:Name="PremiumLegendLabel" Text="🔒 Las opciones en tono tenue estarán disponibles después de activar las funciones premium." FontSize="11" TextColor="#64748B" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="VIDEO Y GRABACIÓN" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Motor de grabación" TextColor="#9FB0C7" />
+                                <Picker x:Name="RecordingEnginePicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>CameraX · recomendado</x:String>
+                                        <x:String>Compatibilidad · MediaProjection</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label Text="Elige el motor de grabación. CameraX es la opción recomendada." FontSize="11" TextColor="#9FB0C7" />
+
+                                <Label Text="Resolución solicitada" TextColor="#9FB0C7" Margin="0,5,0,0" />
+                                <Picker x:Name="CameraXResolutionPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>720p · HD</x:String>
+                                        <x:String>1080p · FHD</x:String>
+                                        <x:String>4K · UHD</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="Premium4KLabel" Text="🔒 4K · UHD — disponible con activación" FontSize="11" TextColor="#64748B" />
+
+                                <Label Text="FPS objetivo" TextColor="#9FB0C7" />
+                                <Picker x:Name="CameraXFrameRatePicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>30 FPS</x:String>
+                                        <x:String>60 FPS</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="Premium60FpsLabel" Text="🔒 60 FPS — disponible con activación" FontSize="11" TextColor="#64748B" />
+
+                                <Label Text="HUD de CameraX" TextColor="#9FB0C7" />
+                                <Picker x:Name="CameraXHudModePicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Limpio · solo logo</x:String>
+                                        <x:String>Básico · incrustado</x:String>
+                                        <x:String>Completo · telemetría total</x:String>
+                                        <x:String>Sin HUD · cámara limpia</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="PremiumCompleteHudLabel" Text="🔒 Completo · telemetría total — disponible con activación" FontSize="11" TextColor="#64748B" />
+
+                                <Label Text="Contenido del video" TextColor="#9FB0C7" />
+                                <Picker x:Name="RecordingModePicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Con telemetría</x:String>
+                                        <x:String>Cámara limpia</x:String>
+                                    </Picker.Items>
+                                </Picker>
+
+                                <Label Text="Calidad del motor de compatibilidad" TextColor="#9FB0C7" />
+                                <Picker x:Name="VideoQualityPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Alta · hasta 1080×1920</x:String>
+                                        <x:String>Ligera · hasta 720×1280</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="PremiumHighCompatibilityLabel" Text="🔒 Alta · hasta 1080×1920 — disponible con activación" FontSize="11" TextColor="#64748B" />
+
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Ocultar barras de Android durante REC" TextColor="White" VerticalOptions="Center" FontSize="12" /><Switch x:Name="HideSystemBarsSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Bloquear orientación durante REC" TextColor="White" VerticalOptions="Center" FontSize="12" /><Switch x:Name="LockOrientationSwitch" Grid.Column="1" /></Grid>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="SEGMENTOS DASHCAM" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Dividir automáticamente el video" TextColor="#9FB0C7" />
+                                <Picker x:Name="VideoSegmentationPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>No dividir</x:String>
+                                        <x:String>5 minutos</x:String>
+                                        <x:String>10 minutos</x:String>
+                                        <x:String>20 minutos</x:String>
+                                        <x:String>30 minutos</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="PremiumSegmentationLabel" Text="🔒 No dividir · 10 min · 20 min · 30 min" FontSize="11" TextColor="#64748B" />
+                                <Label Text="Define cada cuánto se crea un nuevo archivo durante una misma sesión." FontSize="11" TextColor="#9FB0C7" />
+
+                                <Label Text="GRABACIÓN EN BUCLE" FontAttributes="Bold" TextColor="White" Margin="0,8,0,0" />
+                                <Label Text="Conserva una ventana reciente de clips no protegidos. Los protegidos no se eliminan automáticamente." FontSize="11" TextColor="#9FB0C7" />
+                                <Picker x:Name="LoopRecordingPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Desactivada</x:String>
+                                        <x:String>1 hora</x:String>
+                                        <x:String>2 horas</x:String>
+                                        <x:String>4 horas</x:String>
+                                        <x:String>8 horas</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="PremiumLoopLabel" Text="🔒 Desactivada · 2 h · 4 h · 8 h" FontSize="11" TextColor="#64748B" />
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Proteger contexto: anterior + actual + siguiente" TextColor="White" FontSize="12" VerticalOptions="Center" />
+                                    <Switch x:Name="ProtectEventContextSwitch" Grid.Column="1" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- ESTABILIZACIÓN -->
+                    <VerticalStackLayout x:Name="StabilizerSettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="ESTABILIZACIÓN" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="RutaCam GPU Stabilizer" FontAttributes="Bold" TextColor="White" Margin="0,4,0,0" />
+                                <Picker x:Name="RutaCamGpuStabilizationPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Desactivada</x:String>
+                                        <x:String>GPU Suave · experimental</x:String>
+                                        <x:String>GPU Equilibrada · experimental</x:String>
+                                        <x:String>GPU Fuerte · experimental</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="RutaCamGpuStabilizationStatusLabel" Text="Compensa vibraciones y movimientos usando giroscopio y GPU." FontSize="10" TextColor="#9FB0C7" />
+                                <Label Text="Estabiliza el video usando el giroscopio y procesamiento GPU." FontSize="10" TextColor="#9FB0C7" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Campos internos ocultos: conservan compatibilidad y lógica histórica sin mostrarlos en Configuración. -->
+                        <VerticalStackLayout IsVisible="False">
+                            <Picker x:Name="CameraXStabilizationPicker" />
+                            <Label x:Name="CameraStabilizationCompatibilityLabel" />
+                            <Picker x:Name="RutaCamSoftwareStabilizationPicker">
+                                <Picker.Items>
+                                    <x:String>Desactivada</x:String>
+                                    <x:String>RutaCam Suave · experimental</x:String>
+                                    <x:String>RutaCam Equilibrada · experimental</x:String>
+                                    <x:String>RutaCam Fuerte · experimental</x:String>
+                                </Picker.Items>
+                            </Picker>
+                            <Label x:Name="RutaCamSoftwareStabilizationStatusLabel" />
+                            <Label x:Name="CameraStabilizationCapabilityLabel" />
+                            <Button x:Name="AnalyzeAllCamerasButton" />
+                            <Label x:Name="CameraDiagnosticReportLabel" />
+                            <Button x:Name="CopyCameraDiagnosticButton" />
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+
+                    <!-- AUDIO -->
+                    <VerticalStackLayout x:Name="AudioSettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="AUDIO" FontAttributes="Bold" TextColor="White" />
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Grabar audio ambiente" TextColor="White" VerticalOptions="Center" /><Switch x:Name="RecordAudioSwitch" Grid.Column="1" /></Grid>
+                                <Label Text="Fuente de audio" TextColor="#9FB0C7" />
+                                <Picker x:Name="AudioInputPicker" TextColor="White" TitleColor="#9FB0C7" Title="Seleccionar micrófono" />
+                                <Label x:Name="PremiumExternalAudioLabel" Text="🔒 Bluetooth SCO/HFP · Bluetooth LE · USB · cable" FontSize="11" TextColor="#64748B" />
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                    <Button x:Name="RefreshAudioButton" Text="ACTUALIZAR" Clicked="OnRefreshAudioInputsClicked" BackgroundColor="#17263A" TextColor="White" FontSize="10" />
+                                    <Button x:Name="TestMicrophoneButton" Grid.Column="1" Text="PROBAR MICRÓFONO" Clicked="OnTestMicrophoneClicked" BackgroundColor="#0F766E" TextColor="White" FontSize="10" />
+                                </Grid>
+                                <ProgressBar x:Name="MicrophoneLevelBar" Progress="0" ProgressColor="#22D3EE" BackgroundColor="#26364B" HeightRequest="8" />
+                                <Label x:Name="AudioInputStatusLabel" Text="Selecciona la fuente que se usará para grabar audio." FontSize="11" TextColor="#9FB0C7" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- CÁMARA -->
+                    <VerticalStackLayout x:Name="CameraSettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="CÁMARA Y ENCUADRE" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Llenar pantalla puede recortar ligeramente los bordes. Encuadre completo conserva todo lo captado." FontSize="12" TextColor="#9FB0C7" />
+                                <Picker x:Name="CameraPreviewPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Llenar pantalla</x:String>
+                                        <x:String>Ver encuadre completo</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label Text="Cámara inicial" TextColor="#9FB0C7" />
+                                <Picker x:Name="DefaultCameraPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Trasera</x:String>
+                                        <x:String>Frontal</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="PremiumFrontCameraLabel" Text="🔒 Frontal — disponible con activación" FontSize="11" TextColor="#64748B" />
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Mostrar controles rápidos de cámara" TextColor="White" VerticalOptions="Center" FontSize="12" /><Switch x:Name="ShowCameraControlsSwitch" Grid.Column="1" /></Grid>
+                                <Label Text="Zoom inicial" TextColor="#9FB0C7" />
+                                <Slider x:Name="DefaultZoomSlider" Minimum="1" Maximum="4" />
+                                <Label x:Name="DefaultZoomLabel" TextColor="White" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- GPS -->
+                    <VerticalStackLayout x:Name="GpsSettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="GPS Y DISTANCIA" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="El filtro reduce saltos y ruido del GPS sin perder el movimiento real del recorrido." FontSize="12" TextColor="#9FB0C7" />
+                                <Label Text="Filtro GPS" TextColor="#9FB0C7" />
+                                <Picker x:Name="GpsFilterPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Preciso</x:String>
+                                        <x:String>Equilibrado</x:String>
+                                        <x:String>Flexible</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label Text="Menor filtro responde más rápido; mayor filtro suaviza más el ruido." FontSize="10" TextColor="#9FB0C7" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- SEGURIDAD -->
+                    <VerticalStackLayout x:Name="SafetySettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="SEGURIDAD DE GRABACIÓN" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="RutaCam comprueba batería y espacio libre antes de grabar y puede detenerse de forma segura si el almacenamiento llega a un nivel crítico." FontSize="12" TextColor="#9FB0C7" />
+                                <Label Text="Espacio mínimo para iniciar" TextColor="#9FB0C7" />
+                                <Slider x:Name="MinimumStorageSlider" Minimum="0.25" Maximum="5" Value="1" />
+                                <Label x:Name="MinimumStorageLabel" TextColor="White" />
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Detener y guardar con almacenamiento crítico" TextColor="White" VerticalOptions="Center" FontSize="12" /><Switch x:Name="AutoStopStorageSwitch" Grid.Column="1" /></Grid>
+                                <Label Text="Umbral crítico" TextColor="#9FB0C7" />
+                                <Slider x:Name="CriticalStorageSlider" Minimum="100" Maximum="1000" Value="250" />
+                                <Label x:Name="CriticalStorageLabel" TextColor="White" />
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Avisar si la batería está baja antes de REC" TextColor="White" VerticalOptions="Center" FontSize="12" /><Switch x:Name="WarnLowBatterySwitch" Grid.Column="1" /></Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- HUD -->
+                    <VerticalStackLayout x:Name="HudSettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="HUD / TELEMETRÍA" FontAttributes="Bold" TextColor="White" />
+                                <Grid ColumnDefinitions="*,Auto" x:Name="PremiumLogoToggleRow"><Label Text="Logo personal" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowLogoSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto" x:Name="PremiumMapToggleRow"><Label Text="Mini mapa" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowMapSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Velocidad" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowSpeedSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Distancia" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowDistanceSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Cronómetro" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowTimerSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto" x:Name="PremiumAverageSpeedRow"><Label Text="Velocidad promedio" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowAverageSpeedSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto" x:Name="PremiumMaxSpeedRow"><Label Text="Velocidad máxima" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowMaxSpeedSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto" x:Name="PremiumGpsStatusRow"><Label Text="Estado/precisión GPS" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowGpsStatusSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto" x:Name="PremiumCoordinatesRow"><Label Text="Coordenadas GPS" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowCoordinatesSwitch" Grid.Column="1" /></Grid>
+                                <Grid ColumnDefinitions="*,Auto" x:Name="PremiumAltitudeRow"><Label Text="Altitud" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowAltitudeSwitch" Grid.Column="1" /></Grid>
+                                <Label x:Name="PremiumTelemetryHintLabel" Text="🔒 Promedio · máxima · precisión GPS · coordenadas · altitud" FontSize="11" TextColor="#64748B" />
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Fecha y hora actuales" TextColor="White" VerticalOptions="Center" /><Switch x:Name="ShowDateTimeSwitch" Grid.Column="1" /></Grid>
+                                <Label Text="Posición de fecha y hora" TextColor="#9FB0C7" />
+                                <Picker x:Name="DateTimeCornerPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Superior derecha</x:String>
+                                        <x:String>Superior izquierda</x:String>
+                                        <x:String>Inferior derecha</x:String>
+                                        <x:String>Inferior izquierda</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- MAPA -->
+                    <VerticalStackLayout x:Name="MapSettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="MINI MAPA" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Forma" TextColor="#9FB0C7" />
+                                <Picker x:Name="MapShapePicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Cuadrado</x:String>
+                                        <x:String>Circular</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="PremiumMapShapeLabel" Text="🔒 Circular — disponible con activación" FontSize="11" TextColor="#64748B" />
+                                <Label Text="Posición" TextColor="#9FB0C7" />
+                                <Picker x:Name="MapCornerPicker" TextColor="White" TitleColor="#9FB0C7">
+                                    <Picker.Items>
+                                        <x:String>Superior derecha</x:String>
+                                        <x:String>Superior izquierda</x:String>
+                                        <x:String>Inferior derecha</x:String>
+                                        <x:String>Inferior izquierda</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Label x:Name="PremiumMapCornerLabel" Text="🔒 Superior izquierda · Inferior derecha · Inferior izquierda" FontSize="11" TextColor="#64748B" />
+                                <Label Text="Tamaño" TextColor="#9FB0C7" />
+                                <Slider x:Name="MapWidthSlider" Minimum="110" Maximum="220" />
+                                <Label x:Name="MapWidthLabel" TextColor="White" />
+                                <Label Text="Opacidad" TextColor="#9FB0C7" />
+                                <Slider x:Name="MapOpacitySlider" Minimum="0.45" Maximum="1" />
+                                <Label x:Name="MapOpacityLabel" TextColor="White" />
+                                <Label x:Name="PremiumMapOpacityLabel" Text="🔒 Opacidad ajustable — fijada en 80% durante el modo limitado" FontSize="11" TextColor="#64748B" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- LOGO -->
+                    <VerticalStackLayout x:Name="LogoSettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="LOGO PERSONAL" FontAttributes="Bold" TextColor="White" />
+                                <Border BackgroundColor="#08111F" Stroke="#2A3C55" StrokeThickness="1" Padding="10">
+                                    <VerticalStackLayout Spacing="7">
+                                        <Image x:Name="LogoPreview" Source="personal_logo.png" HeightRequest="90" Aspect="AspectFit" />
+                                        <Label x:Name="LogoSourceLabel" Text="Logo predeterminado · icono oficial de RutaCam GPS" FontSize="11" TextColor="#9FB0C7" HorizontalTextAlignment="Center" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                    <Button x:Name="ChooseLogoButton" Grid.Column="0" Text="ELEGIR DE GALERÍA" Clicked="OnChooseLogoClicked" BackgroundColor="#1D4ED8" TextColor="White" FontSize="10" />
+                                    <Button x:Name="UseDefaultLogoButton" Grid.Column="1" Text="PREDETERMINADO" Clicked="OnUseDefaultLogoClicked" BackgroundColor="#17263A" TextColor="White" FontSize="9" />
+                                </Grid>
+                                <Label Text="Tamaño" TextColor="#9FB0C7" x:Name="PremiumLogoSizeTitleLabel" />
+                                <Slider x:Name="LogoWidthSlider" Minimum="55" Maximum="180" />
+                                <Label x:Name="LogoWidthLabel" TextColor="White" />
+                                <Label Text="Opacidad" TextColor="#9FB0C7" x:Name="PremiumLogoOpacityTitleLabel" />
+                                <Slider x:Name="LogoOpacitySlider" Minimum="0.35" Maximum="1" />
+                                <Label x:Name="LogoOpacityLabel" TextColor="White" />
+                                <Label x:Name="PremiumLogoOptionsLabel" Text="🔒 Logo personal · tamaño ajustable · opacidad ajustable" FontSize="11" TextColor="#64748B" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- ACTIVACIÓN -->
+                    <VerticalStackLayout x:Name="ActivationSettingsSection" IsVisible="False" Spacing="14">
+                        <Border x:Name="ActivationCard" BackgroundColor="#111C2C" Stroke="#F59E0B" StrokeThickness="1" Padding="16">
+                            <VerticalStackLayout Spacing="9">
+                                <Label Text="ACTIVACIÓN" FontAttributes="Bold" TextColor="White" />
+                                <Label x:Name="ActivationStatusLabel" Text="MODO LIMITADO" FontAttributes="Bold" FontSize="13" TextColor="White" />
+                                <Label x:Name="ActivationDetailLabel" Text="RutaCam está trabajando con funciones limitadas. Solicita el código de activación completa por solo 5€ EUR." FontSize="11" TextColor="#CBD5E1" />
+                                <Grid x:Name="ActivationButtons" ColumnDefinitions="*,*" ColumnSpacing="8">
+                                    <Button x:Name="RequestActivationButton" Grid.Column="0" Text="WHATSAPP" Clicked="OnRequestActivationClicked" BackgroundColor="#128C7E" TextColor="White" FontSize="10" />
+                                    <Button x:Name="EnterActivationButton" Grid.Column="1" Text="INTRODUCIR CÓDIGO" Clicked="OnEnterActivationCodeClicked" BackgroundColor="#1D4ED8" TextColor="White" FontSize="9" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- POLÍTICA DE PRIVACIDAD -->
+                    <VerticalStackLayout x:Name="PrivacySettingsSection" IsVisible="False" Spacing="14">
+                        <Border BackgroundColor="#111C2C" Stroke="#23334A" StrokeThickness="1" Padding="16">
+                            <VerticalStackLayout Spacing="14">
+                                <Label Text="POLÍTICA DE PRIVACIDAD" FontSize="20" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Última actualización: 22/08/2026" FontSize="10" TextColor="#7F90A8" />
+                                <Label Text="RutaCam GPS está diseñada para funcionar principalmente de forma local en el dispositivo. Esta política explica qué datos y permisos utiliza la aplicación, para qué se usan y cuándo pueden intervenir servicios externos." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="DATOS Y PERMISOS UTILIZADOS" FontAttributes="Bold" TextColor="White" Margin="0,4,0,0" />
+                                <Label Text="RutaCam GPS puede solicitar acceso a cámara, micrófono, ubicación, Bluetooth y notificaciones según las funciones que utilices. El modo de compatibilidad MediaProjection puede requerir permiso para capturar la pantalla durante la grabación. Estos permisos se usan para grabar video y audio, obtener telemetría GPS, seleccionar dispositivos de audio externos y mantener activa una grabación en primer plano." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="UBICACIÓN Y TELEMETRÍA GPS" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Durante una grabación, la aplicación puede procesar latitud, longitud, velocidad, altitud, precisión, rumbo y marcas de tiempo para mostrar el HUD, calcular distancia y estadísticas, dibujar la ruta y crear el historial. Estos datos se guardan localmente en el dispositivo como parte del recorrido hasta que el usuario los elimina o desinstala la aplicación." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="CÁMARA, AUDIO Y SENSORES" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="La cámara se utiliza para crear las grabaciones de RutaCam. El micrófono solo se utiliza cuando la grabación de audio está habilitada. Si eliges un micrófono Bluetooth, USB o cableado, Android puede solicitar permisos adicionales. El giroscopio y el acelerómetro pueden procesarse en tiempo real para la estabilización GPU; RutaCam no los utiliza para crear un perfil personal ni los envía a un servidor propio." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="VIDEOS, HISTORIAL Y ARCHIVOS" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Los videos se publican en el almacenamiento del dispositivo, normalmente en Movies/RutaCam GPS. El historial de rutas y las preferencias de la aplicación se almacenan localmente. Los archivos GPX y CSV se generan solo cuando el usuario solicita exportarlos y se comparten mediante el selector de Android con la aplicación que el usuario elija." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="MAPAS Y CONEXIÓN A INTERNET" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="RutaCam GPS utiliza Mapsui y OpenStreetMap para mostrar el mapa. Al descargar mosaicos del mapa, el proveedor de mapas puede recibir datos técnicos habituales de una conexión de Internet, como la dirección IP y las solicitudes de mosaicos correspondientes al área visualizada. RutaCam GPS no utiliza Google Maps para esta función." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="ACTIVACIÓN Y WHATSAPP" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="La activación premium se controla localmente en el dispositivo. Si pulsas la opción para solicitar activación por WhatsApp, RutaCam abre WhatsApp o el navegador con un mensaje preparado. El envío queda bajo tu control y, al continuar, se aplican las políticas de privacidad de WhatsApp/Meta." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="ANALÍTICA, PUBLICIDAD Y VENTA DE DATOS" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="La versión actual de RutaCam GPS no integra SDK de publicidad, analítica de comportamiento o rastreo como Mixpanel, PostHog, Smartlook, UXCam, Firebase Analytics o servicios equivalentes. RutaCam GPS no vende los datos de ubicación, videos, audio ni recorridos del usuario con fines publicitarios o de marketing." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="CONTROL DEL USUARIO" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Puedes negar permisos desde Android, aunque algunas funciones dejarán de estar disponibles. También puedes eliminar videos desde la galería o RutaCam, borrar recorridos desde el historial y controlar qué archivos GPX/CSV compartes. La desinstalación elimina los datos privados de la aplicación conforme al comportamiento de Android; los videos publicados en la galería pueden permanecer hasta que los elimines." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="CAMBIOS EN ESTA POLÍTICA" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Si una futura versión incorpora nuevas funciones que cambien el tratamiento de datos, esta política deberá actualizarse para reflejar esos cambios." FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+
+                                <Label Text="CONTACTO" FontAttributes="Bold" TextColor="White" />
+                                <Label Text="Para consultas sobre RutaCam GPS, soporte o esta Política de privacidad puedes contactarnos mediante los siguientes canales:" FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+                                <Label Text="WhatsApp: +58-414-2368774" FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+                                <Label Text="Correo electrónico: elvismaodj@gmail.com" FontSize="12" TextColor="#CBD5E1" LineBreakMode="WordWrap" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>

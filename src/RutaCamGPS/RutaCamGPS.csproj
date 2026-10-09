@@ -1,0 +1,73 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0-android</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>GPSCamRoute</RootNamespace>
+		<AssemblyName>GPSCamRoute</AssemblyName>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<!-- El código proviene de una reconstrucción; se silencian avisos de nulabilidad no críticos -->
+		<NoWarn>$(NoWarn);CS8600;CS8601;CS8602;CS8603;CS8604;CS8618;CS8619;CS8620;CS8625;CS8629;CS8767;CS0162;CS0168;CS0219;CS0414;CS0618;CA1416;CA1422;XC0022;XC0023;XC0025</NoWarn>
+		<MauiXamlInflator>SourceGen</MauiXamlInflator>
+
+		<ApplicationTitle>RutaCam GPS</ApplicationTitle>
+		<ApplicationId>com.elvismao.rutacamgps</ApplicationId>
+		<ApplicationDisplayVersion>3.0.0</ApplicationDisplayVersion>
+		<ApplicationVersion>300</ApplicationVersion>
+		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<!-- Distribución por APK directo (sin tienda) -->
+	<PropertyGroup>
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>none</DebugType>
+		<AndroidUseInterpreter>false</AndroidUseInterpreter>
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>partial</TrimMode>
+		<AndroidLinkTool>r8</AndroidLinkTool>
+		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+		<AndroidKeyStore Condition="Exists('$(MSBuildThisFileDirectory)..\..\signing\rutacam-release.keystore')">true</AndroidKeyStore>
+		<AndroidSigningKeyStore>$(MSBuildThisFileDirectory)..\..\signing\rutacam-release.keystore</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>rutacam</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass>env:RUTACAM_KEY_PASS</AndroidSigningKeyPass>
+		<AndroidSigningStorePass>env:RUTACAM_KEY_PASS</AndroidSigningStorePass>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<MauiIcon Include="Resources\AppIcon\rutacam_icon.png" ForegroundFile="Resources\AppIcon\rutacam_icon_foreground.png" Color="#050B13" ForegroundScale="1.0" />
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#050B13" BaseSize="128,128" />
+		<MauiImage Include="Resources\Images\personal_logo.png" Resize="False" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.80" />
+		<PackageReference Include="CommunityToolkit.Maui.Camera" Version="6.1.0" />
+		<PackageReference Include="Mapsui.Maui" Version="5.1.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.2" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.Core" Version="1.4.2.*" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.Camera2" Version="1.4.2.*" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.Lifecycle" Version="1.4.2.*" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.Video" Version="1.4.2.*" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.View" Version="1.4.2.*" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.Effects" Version="1.4.2.*" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.Extensions" Version="1.4.2.*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RutaCamGPS.Core\RutaCamGPS.Core.csproj" />
+	</ItemGroup>
+
+</Project>

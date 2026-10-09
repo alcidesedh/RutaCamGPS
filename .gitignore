@@ -1,0 +1,32 @@
+# Build output and packages
+*.apk
+*.aab
+bin/
+obj/
+dist/
+.vs/
+*.user
+*.suo
+
+# Analysis artifacts (heavy / regenerable)
+unpacked/
+assemblies/
+decompiled/
+
+# Portable toolchains (local dependencies)
+tools/dotnet/
+tools/dotnet10/
+tools/jdk17/
+tools/android-sdk/
+tools/ilspy/
+tools/*.log
+tools/*.txt
+tools/dotnet-install.ps1
+
+# Secrets & Private Keys (never commit to git)
+signing/
+license-keys/
+tools/keygen/master_keys.json
+tools/keygen/master_keys.json.bak
+*.keystore
+*.jks

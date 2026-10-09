@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GPSCamRoute.RouteDetailPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
+    xmlns:models="clr-namespace:GPSCamRoute.Models"
+    Title="Detalle">
+
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="12" Padding="14">
+        <Grid Grid.Row="0" ColumnDefinitions="*,*,*" ColumnSpacing="8">
+            <Border Grid.Column="0" Padding="10" BackgroundColor="{StaticResource Surface}" StrokeThickness="0">
+                <VerticalStackLayout Spacing="2"><Label Text="DISTANCIA" FontSize="10" TextColor="{StaticResource TextSecondary}" /><Label x:Name="DistanceValue" FontSize="19" FontAttributes="Bold" /></VerticalStackLayout>
+            </Border>
+            <Border Grid.Column="1" Padding="10" BackgroundColor="{StaticResource Surface}" StrokeThickness="0">
+                <VerticalStackLayout Spacing="2"><Label Text="PROMEDIO" FontSize="10" TextColor="{StaticResource TextSecondary}" /><Label x:Name="AverageValue" FontSize="19" FontAttributes="Bold" /></VerticalStackLayout>
+            </Border>
+            <Border Grid.Column="2" Padding="10" BackgroundColor="{StaticResource Surface}" StrokeThickness="0">
+                <VerticalStackLayout Spacing="2"><Label Text="MÁXIMA" FontSize="10" TextColor="{StaticResource TextSecondary}" /><Label x:Name="MaxValue" FontSize="19" FontAttributes="Bold" /></VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <mapsui:MapControl x:Name="DetailMap" />
+            <Border Margin="8" Padding="6,3" BackgroundColor="#B308111F" StrokeThickness="0" HorizontalOptions="End" VerticalOptions="End">
+                <Label Text="© OpenStreetMap contributors" FontSize="9" TextColor="White" />
+            </Border>
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="2" Spacing="8">
+            <Label x:Name="DateValue" FontSize="14" FontAttributes="Bold" />
+            <Label x:Name="DurationValue" FontSize="13" TextColor="{StaticResource TextSecondary}" />
+            <Label x:Name="VideoValue" FontSize="11" LineBreakMode="TailTruncation" TextColor="{StaticResource TextSecondary}" />
+            <Label x:Name="RecoverySummaryLabel" FontSize="11" FontAttributes="Bold" TextColor="#F5C56B" IsVisible="False" />
+            <Label x:Name="LoopSummaryLabel" FontSize="11" TextColor="#F5C56B" IsVisible="False" />
+            <Grid x:Name="VideoActions" ColumnDefinitions="*,*" ColumnSpacing="8">
+                <Button x:Name="ViewVideoButton" Grid.Column="0" Text="VER VIDEO" Style="{StaticResource PrimaryButton}" Clicked="OnViewVideoClicked" />
+                <Button x:Name="ShareVideoButton" Grid.Column="1" Text="COMPARTIR" Style="{StaticResource SecondaryButton}" Clicked="OnShareVideoClicked" />
+            </Grid>
+            <Button x:Name="DeleteLegacyVideoButton" Text="BORRAR VIDEO" Style="{StaticResource SecondaryButton}" IsVisible="False" Clicked="OnDeleteLegacyVideoClicked" />
+            <Border x:Name="SegmentsPanel" IsVisible="False" Padding="10" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Divider}" StrokeThickness="1">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="SEGMENTOS DEL RECORRIDO" FontSize="12" FontAttributes="Bold" />
+                    <CollectionView x:Name="SegmentsView" SelectionMode="None" HeightRequest="180">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:VideoSegment">
+                                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" ColumnSpacing="6" Padding="0,4">
+                                    <Label Grid.Column="0" Text="{Binding IndexText}" FontSize="10" FontAttributes="Bold" VerticalOptions="Center" />
+                                    <VerticalStackLayout Grid.Column="1" Spacing="0">
+                                        <Label Text="{Binding TimeRangeText}" FontSize="10" />
+                                        <Label Text="{Binding SizeText}" FontSize="9" TextColor="{StaticResource TextSecondary}" />
+                                        <Label Text="{Binding ProtectedText}" FontSize="9" FontAttributes="Bold" TextColor="#F5C56B" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="2" Text="{Binding ProtectionButtonText}" FontSize="8" Padding="7,3" CommandParameter="{Binding .}" Clicked="OnToggleProtectionClicked" />
+                                    <Button Grid.Column="3" Text="VER" FontSize="9" Padding="8,3" IsVisible="{Binding HasPublicVideo}" CommandParameter="{Binding .}" Clicked="OnViewSegmentClicked" />
+                                    <Button Grid.Column="4" Text="↗" FontSize="11" Padding="8,3" IsVisible="{Binding HasPublicVideo}" CommandParameter="{Binding .}" Clicked="OnShareSegmentClicked" />
+                                    <Button Grid.Column="5" Text="✕" FontSize="11" Padding="8,3" CommandParameter="{Binding .}" Clicked="OnDeleteSegmentClicked" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                <Button Grid.Column="0" Text="EXPORTAR GPX" Style="{StaticResource SecondaryButton}" Clicked="OnGpxClicked" />
+                <Button Grid.Column="1" Text="EXPORTAR CSV" Style="{StaticResource SecondaryButton}" Clicked="OnCsvClicked" />
+            </Grid>
+            <Button Text="BORRAR ESTE REGISTRO" Style="{StaticResource SecondaryButton}" Clicked="OnDeleteRecordClicked" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

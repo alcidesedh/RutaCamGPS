@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GPSCamRoute.HistoryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:GPSCamRoute.Models"
+    Title="Historial">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="14" RowSpacing="12">
+        <VerticalStackLayout Grid.Row="0" Spacing="2">
+            <Label Text="RECORRIDOS" FontSize="26" FontAttributes="Bold" />
+            <Label Text="Rutas, videos y exportaciones GPS guardadas" FontSize="13" TextColor="{StaticResource TextSecondary}" />
+        </VerticalStackLayout>
+
+        <CollectionView
+            x:Name="RoutesView"
+            Grid.Row="1"
+            SelectionMode="None">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="20" Spacing="8" VerticalOptions="Center">
+                    <Label Text="Aún no hay recorridos" FontSize="20" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                    <Label Text="Inicia una grabación para crear el primer registro." TextColor="{StaticResource TextSecondary}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:RouteRecord">
+                    <Border Margin="0,0,0,12" Padding="14" BackgroundColor="{StaticResource Surface}" Stroke="{StaticResource Divider}" StrokeThickness="1">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="9">
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding DateText}" FontSize="17" FontAttributes="Bold" />
+                                <Label Text="{Binding DurationText, StringFormat='Duración: {0}'}" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding RecordingEngine, StringFormat='Motor: {0}'}" FontSize="10" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding RecoverySummaryText}" FontSize="10" FontAttributes="Bold" TextColor="#F5C56B" />
+                                <Label Text="{Binding LoopSummaryText}" FontSize="10" TextColor="#F5C56B" />
+                            </VerticalStackLayout>
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding DistanceText}" FontSize="19" FontAttributes="Bold" TextColor="{StaticResource Primary}" VerticalOptions="Center" />
+
+                            <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="18">
+                                <Label Text="{Binding AverageSpeedText, StringFormat='Promedio {0}'}" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding MaxSpeedText, StringFormat='Máx. {0}'}" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                            </HorizontalStackLayout>
+
+                            <Label Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding VideoLocationText}" FontSize="11" TextColor="{StaticResource TextSecondary}" LineBreakMode="TailTruncation" />
+
+                            <Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                <Button Grid.Column="0" Text="RUTA" HeightRequest="42" Style="{StaticResource SecondaryButton}" CommandParameter="{Binding .}" Clicked="OnRouteClicked" />
+                                <Button Grid.Column="1" Text="{Binding VideoButtonText}" HeightRequest="42" Style="{StaticResource PrimaryButton}" IsVisible="{Binding HasPublicVideo}" CommandParameter="{Binding .}" Clicked="OnVideoClicked" />
+                                <Button Grid.Column="2" Text="{Binding ShareButtonText}" HeightRequest="42" Style="{StaticResource SecondaryButton}" IsVisible="{Binding HasPublicVideo}" CommandParameter="{Binding .}" Clicked="OnShareClicked" />
+                            </Grid>
+
+                            <Grid Grid.Row="4" Grid.ColumnSpan="2" ColumnDefinitions="*,*" ColumnSpacing="8">
+                                <Button Grid.Column="0" Text="EXPORTAR GPX" HeightRequest="40" Style="{StaticResource SecondaryButton}" CommandParameter="{Binding .}" Clicked="OnGpxClicked" />
+                                <Button Grid.Column="1" Text="EXPORTAR CSV" HeightRequest="40" Style="{StaticResource SecondaryButton}" CommandParameter="{Binding .}" Clicked="OnCsvClicked" />
+                            </Grid>
+
+                            <Button
+                                Grid.Row="5"
+                                Grid.ColumnSpan="2"
+                                Text="ELIMINAR VIDEO Y REGISTRO"
+                                HeightRequest="40"
+                                Style="{StaticResource SecondaryButton}"
+                                IsVisible="{Binding HasAnyVideo}"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnDeleteVideoClicked" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button
+            Grid.Row="2"
+            Text="LIMPIAR HISTORIAL COMPLETO"
+            Style="{StaticResource SecondaryButton}"
+            Clicked="OnDeleteAllClicked" />
+    </Grid>
+</ContentPage>

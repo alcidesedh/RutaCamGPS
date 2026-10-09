@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GPSCamRoute.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="RutaCam GPS"
+    NavigationPage.HasNavigationBar="False"
+    BackgroundColor="#050B13">
+
+    <Grid>
+        <!--
+            V1.9.2.2: la CameraView vive dentro de un host para poder recrear
+            por completo su Handler/PreviewView después de usar el grafo CameraX
+            personalizado. Esto evita conservar una superficie nativa desconectada.
+        -->
+        <ContentView x:Name="CameraHost" HorizontalOptions="Fill" VerticalOptions="Fill" />
+
+        <!-- Capa de gestos independiente del PreviewView nativo. Así el pellizco
+             sigue llegando a MAUI tanto en preview normal como durante CameraX REC. -->
+        <Grid x:Name="CameraGestureLayer" BackgroundColor="Transparent">
+            <Grid.GestureRecognizers>
+                <PinchGestureRecognizer PinchUpdated="OnCameraPinchUpdated" />
+                <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="OnCameraDoubleTapped" />
+            </Grid.GestureRecognizers>
+        </Grid>
+
+        <BoxView VerticalOptions="End" HeightRequest="260" Color="#5C030A12" />
+
+        <Image
+            x:Name="PersonalLogo"
+            Source="personal_logo.png"
+            Margin="18,18,0,0"
+            HorizontalOptions="Start"
+            VerticalOptions="Start"
+            Aspect="AspectFit"
+            WidthRequest="88"
+            HeightRequest="60" />
+
+        <Border
+            x:Name="RecordBadge"
+            IsVisible="False"
+            Margin="0,18,18,0"
+            Padding="10,6"
+            BackgroundColor="#B807111F"
+            Stroke="#42FFFFFF"
+            StrokeThickness="1"
+            HorizontalOptions="End"
+            VerticalOptions="Start">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnRecordBadgeTapped" />
+            </Border.GestureRecognizers>
+            <HorizontalStackLayout Spacing="7">
+                <BoxView x:Name="RecordDot" WidthRequest="9" HeightRequest="9" CornerRadius="5" Color="#9FB0C7" VerticalOptions="Center" />
+                <Label x:Name="RecordStatusLabel" Text="LISTO" FontSize="11" FontAttributes="Bold" TextColor="White" VerticalTextAlignment="Center" />
+            </HorizontalStackLayout>
+        </Border>
+
+        <Border
+            x:Name="CameraTools"
+            Margin="0,0,12,120"
+            Padding="5"
+            BackgroundColor="#B807111F"
+            Stroke="#42FFFFFF"
+            StrokeThickness="1"
+            HorizontalOptions="End"
+            VerticalOptions="Center">
+            <VerticalStackLayout Spacing="5">
+                <Button x:Name="SwitchCameraButton" Text="↺" WidthRequest="48" HeightRequest="44" Padding="0" FontSize="20" BackgroundColor="#17263A" TextColor="White" Clicked="OnSwitchCameraClicked" />
+                <Button x:Name="TorchButton" Text="☀" WidthRequest="48" HeightRequest="44" Padding="0" FontSize="18" BackgroundColor="#17263A" TextColor="White" Clicked="OnTorchClicked" />
+                <Button x:Name="ZoomButton" Text="1.0×" WidthRequest="48" HeightRequest="44" Padding="0" FontSize="12" BackgroundColor="#17263A" TextColor="White" Clicked="OnZoomButtonClicked" />
+            </VerticalStackLayout>
+        </Border>
+
+        <Border
+            x:Name="ZoomPanel"
+            IsVisible="False"
+            Margin="18,0,18,105"
+            Padding="12,8"
+            BackgroundColor="#E807111F"
+            Stroke="#42FFFFFF"
+            StrokeThickness="1"
+            HorizontalOptions="Fill"
+            VerticalOptions="End">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Label Text="ZOOM" FontSize="10" TextColor="#AEBED1" VerticalOptions="Center" />
+                <Slider x:Name="ZoomSlider" Grid.Column="1" Minimum="1" Maximum="4" Value="1" ValueChanged="OnZoomSliderChanged" />
+                <Label x:Name="ZoomValueLabel" Grid.Column="2" Text="1.0×" FontSize="12" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <Border
+            x:Name="MapCard"
+            Margin="16,62,16,0"
+            WidthRequest="150"
+            HeightRequest="150"
+            HorizontalOptions="End"
+            VerticalOptions="Start"
+            BackgroundColor="#D908111F"
+            Stroke="#80FFFFFF"
+            StrokeThickness="1"
+            StrokeShape="Ellipse">
+            <Grid>
+                <mapsui:MapControl x:Name="RouteMap" />
+                <Border
+                    Margin="0,0,0,8"
+                    Padding="4,1"
+                    BackgroundColor="#A807111F"
+                    StrokeThickness="0"
+                    HorizontalOptions="Center"
+                    VerticalOptions="End">
+                    <Label Text="© OpenStreetMap" FontSize="7" TextColor="White" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <Border
+            x:Name="DateTimeCard"
+            IsVisible="False"
+            Margin="18"
+            Padding="10,6"
+            BackgroundColor="#B807111F"
+            Stroke="#42FFFFFF"
+            StrokeThickness="1"
+            HorizontalOptions="End"
+            VerticalOptions="End">
+            <Label
+                x:Name="DateTimeLabel"
+                Text="--/--/---- --:--:--"
+                FontSize="14"
+                FontAttributes="Bold"
+                TextColor="White" />
+        </Border>
+
+        <VerticalStackLayout
+            x:Name="TelemetryPanel"
+            Margin="18,0,18,94"
+            Spacing="7"
+            HorizontalOptions="Start"
+            VerticalOptions="End">
+
+            <Border x:Name="SpeedCard" Padding="14,6" BackgroundColor="#A807111F" StrokeThickness="0">
+                <HorizontalStackLayout Spacing="9" VerticalOptions="Center">
+                    <Label x:Name="SpeedLabel" Text="0" FontSize="60" FontAttributes="Bold" TextColor="White" />
+                    <Label Text="km/h" FontSize="17" TextColor="#C5D0DF" VerticalOptions="End" Margin="0,0,0,11" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="7">
+                <Border x:Name="DistanceCard" Grid.Column="0" Padding="10,5" BackgroundColor="#A807111F" StrokeThickness="0">
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="DISTANCIA" FontSize="8" TextColor="#AEBED1" />
+                        <Label x:Name="DistanceLabel" Text="0.00 km" FontSize="16" FontAttributes="Bold" TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border x:Name="TimerCard" Grid.Column="1" Padding="10,5" BackgroundColor="#A807111F" StrokeThickness="0">
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="TIEMPO" FontSize="8" TextColor="#AEBED1" />
+                        <Label x:Name="TimeLabel" Text="00:00" FontSize="16" FontAttributes="Bold" TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Grid x:Name="ExtraSpeedRow" ColumnDefinitions="Auto,Auto" ColumnSpacing="7">
+                <Border x:Name="AverageSpeedCard" Grid.Column="0" Padding="10,5" BackgroundColor="#9707111F" StrokeThickness="0">
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="PROMEDIO" FontSize="8" TextColor="#AEBED1" />
+                        <Label x:Name="AverageSpeedLabel" Text="0 km/h" FontSize="14" FontAttributes="Bold" TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border x:Name="MaxSpeedCard" Grid.Column="1" Padding="10,5" BackgroundColor="#9707111F" StrokeThickness="0">
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="MÁXIMA" FontSize="8" TextColor="#AEBED1" />
+                        <Label x:Name="MaxSpeedLabel" Text="0 km/h" FontSize="14" FontAttributes="Bold" TextColor="White" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Border x:Name="GpsInfoCard" Padding="9,4" BackgroundColor="#9007111F" StrokeThickness="0">
+                <HorizontalStackLayout Spacing="9">
+                    <Label x:Name="GpsLabel" Text="GPS: esperando" FontSize="10" TextColor="#D2DCE8" />
+                    <Label x:Name="CoordinatesLabel" Text="" FontSize="10" TextColor="#D2DCE8" IsVisible="False" />
+                    <Label x:Name="AltitudeLabel" Text="" FontSize="10" TextColor="#D2DCE8" IsVisible="False" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <Border x:Name="SystemInfoCard" Padding="9,4" BackgroundColor="#9007111F" StrokeThickness="0" IsVisible="False">
+                <HorizontalStackLayout Spacing="10">
+                    <Label x:Name="BatteryLabel" Text="BAT --" FontSize="10" TextColor="#D2DCE8" />
+                    <Label x:Name="StorageLabel" Text="LIBRE --" FontSize="10" TextColor="#D2DCE8" />
+                </HorizontalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+
+        <Button
+            x:Name="ProtectClipButton"
+            Text="🔒 GUARDAR CLIP"
+            IsVisible="False"
+            Margin="18,0,18,104"
+            Padding="14,8"
+            HeightRequest="46"
+            BackgroundColor="#D9B7791F"
+            TextColor="White"
+            FontSize="12"
+            FontAttributes="Bold"
+            HorizontalOptions="End"
+            VerticalOptions="End"
+            Clicked="OnProtectClipClicked" />
+
+        <Grid
+            x:Name="ActionBar"
+            Padding="14,10,14,18"
+            ColumnDefinitions="*,*,Auto,Auto"
+            ColumnSpacing="8"
+            BackgroundColor="#D9050B13"
+            VerticalOptions="End">
+            <Button x:Name="StartButton" Grid.Column="0" Text="INICIAR" Style="{StaticResource PrimaryButton}" Clicked="OnStartClicked" />
+            <Button x:Name="StopButton" Grid.Column="1" Text="DETENER" Style="{StaticResource DangerButton}" IsEnabled="False" Clicked="OnStopClicked" />
+            <Button x:Name="SettingsButton" Grid.Column="2" Text="⚙" WidthRequest="52" Style="{StaticResource SecondaryButton}" Clicked="OnSettingsClicked" />
+            <Button x:Name="HistoryButton" Grid.Column="3" Text="H" WidthRequest="52" Style="{StaticResource SecondaryButton}" Clicked="OnHistoryClicked" />
+        </Grid>
+    </Grid>
+</ContentPage>
